@@ -2,72 +2,81 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://marvoalou.github.io/2024/02/24/linux-base/</loc>
+    <loc>http://marvoalou.github.io/posts/a6822d6b.html</loc>
     
-    <lastmod>2024-02-28</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://marvoalou.github.io/2024/02/24/OS-01/</loc>
-    
-    <lastmod>2024-02-28</lastmod>
+    <lastmod>2024-03-01</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>http://marvoalou.github.io/2024/02/24/SQL/</loc>
+    <loc>http://marvoalou.github.io/posts/1f6200b9.html</loc>
     
-    <lastmod>2024-02-24</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://marvoalou.github.io/2024/02/24/database/</loc>
-    
-    <lastmod>2024-02-24</lastmod>
+    <lastmod>2024-02-29</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>http://marvoalou.github.io/2024/02/24/math/</loc>
+    <loc>http://marvoalou.github.io/posts/a927044d.html</loc>
     
-    <lastmod>2024-02-24</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://marvoalou.github.io/2024/02/24/ml/</loc>
-    
-    <lastmod>2024-02-24</lastmod>
+    <lastmod>2024-02-29</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>http://marvoalou.github.io/2024/02/24/OS-02/</loc>
+    <loc>http://marvoalou.github.io/posts/d58e2a66.html</loc>
     
-    <lastmod>2024-02-24</lastmod>
+    <lastmod>2024-02-29</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>http://marvoalou.github.io/2024/02/24/CS61A-note/</loc>
+    <loc>http://marvoalou.github.io/posts/83c24a0e.html</loc>
     
-    <lastmod>2024-02-24</lastmod>
+    <lastmod>2024-02-29</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://marvoalou.github.io/posts/7b347bb3.html</loc>
+    
+    <lastmod>2024-02-29</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://marvoalou.github.io/posts/e23d2a09.html</loc>
+    
+    <lastmod>2024-02-29</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://marvoalou.github.io/posts/4d712855.html</loc>
+    
+    <lastmod>2024-02-29</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://marvoalou.github.io/posts/c953062e.html</loc>
+    
+    <lastmod>2024-02-29</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -103,7 +112,7 @@
 
   <url>
     <loc>http://marvoalou.github.io/</loc>
-    <lastmod>2024-02-28</lastmod>
+    <lastmod>2024-03-01</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
