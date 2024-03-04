@@ -1585,13 +1585,6 @@ a {
 a:hover {
   color: #000;
 }
-#site-title,
-#site-subtitle,
-.site-name,
-#aside-content .author-info__name,
-#aside-content .author-info__description {
-  font-family: sans-serif;
-}
 .is-center {
   text-align: center;
 }
@@ -2126,7 +2119,6 @@ figure.highlight pre .javascript .function {
   height: 100%;
   vertical-align: top;
   text-align: center;
-  font-family: sans-serif;
 }
 @media screen and (max-width: 768px) {
   .error404 #error-wrap .error-content .error-info {
@@ -3097,7 +3089,7 @@ h1.page-title + .tag-cloud-list {
   color: #000;
 }
 #aside-content #card-toc .toc-content .toc-link.active {
-  background: #00c4b6;
+  background: #87cefa;
   color: #fff;
 }
 #aside-content .sticky_layout:only-child > :first-child {
