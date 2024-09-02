@@ -4,6 +4,19 @@
   
     
     <entry>
+      <title>Miscellanea</title>
+      <link href="/posts/undefined.html"/>
+      <url>/posts/undefined.html</url>
+      
+        <content type="html"><![CDATA[<ul><li>返回登录：Ctrl + Alt + Delete 或者 sudo systemctl restart sddm.service</li><li></li></ul>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>图书馆窗边有感</title>
       <link href="/posts/56897.html"/>
       <url>/posts/56897.html</url>
