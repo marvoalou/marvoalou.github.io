@@ -21,7 +21,7 @@
       <link href="/posts/undefined.html"/>
       <url>/posts/undefined.html</url>
       
-        <content type="html"><![CDATA[<ul><li>返回登录：Ctrl + Alt + Delete 或者 sudo systemctl restart sddm.service</li><li></li></ul>]]></content>
+        <content type="html"><![CDATA[<ul><li>返回登录：Ctrl + Alt + Delete 或者 sudo systemctl restart sddm.service</li><li>搜多文件内容：<code>grep -rn &quot;runlog&quot; *</code>   </li></ul>]]></content>
       
       
       
