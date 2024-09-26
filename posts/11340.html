@@ -184,7 +184,7 @@
 <p>容器没有虚拟化，是基于OS的运行环境打包，其大小也是弹性的，取决于你需要多少资源<br>所以编排容器的时候需要声明容器的环境以及容器之间的交互情况，所谓环境是包管理和资源分配</p>
 <p>镜像(image)：系统状态的快照，存有相关的静态资源，运行时成为系统组件<br>所以容器镜像实在基础镜像之上添加层，容器是镜像的运行载体，镜像也由容器创建</p>
 <p>Dockerfile会按层通过docker builder构建镜像，在base image上添加不同的层来添加环境组件</p>
-<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/posts/11340.htm/figure2.png" alt><br>容器的生命周期由deamon管理</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/posts/11340/figure2.png" alt><br>容器的生命周期由deamon管理</p>
 <p>容器之间的隔离通过namespace</p>
 <p>Docker uses a union file system to combine these layers into a single image. Changes in one layer do not affect the underlying layers. This makes images lightweight, as only the changes are stored.</p>
 <p>Each layer represents a snapshot of the filesystem, which can be useful for rolling back changes or tracking modifications.</p>
@@ -194,7 +194,7 @@
 <p>kubelet可以帮助找到container，最重要的是API-server，用户和系统运行的接口<br>etcd分布式数据库存储着调度信息</p>
 <p>pod内部的container之间共享网络和存储，IP相同，可挂载共享卷来持久化存储<br>pod将容器进行逻辑分割，提供管理抽象，所以pod与docker之间解偶</p>
 <p>一个pod里面的一个container就像是一个host里面的一个app</p>
-<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/posts/11340.htm/figure1.png" alt="image"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/posts/11340/figure1.png" alt="image"></p>
 <p>kubectl run [podname] —image=[默认搜索dockerhub]</p>
 <p>-i 是标准输入，-t是tty</p>
 <p>kubectl describe <code>component name</code> <code>specific name</code></p>
