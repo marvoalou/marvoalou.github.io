@@ -4,6 +4,45 @@
   
     
     <entry>
+      <title>TrojanNN</title>
+      <link href="/posts/11148.html"/>
+      <url>/posts/11148.html</url>
+      
+        <content type="html"><![CDATA[<h1 id="Note"><a href="#Note" class="headerlink" title="Note"></a>Note</h1><p>不需要使用原本的数据集的后门攻击，</p><h2 id="“INTRODUCTION”-pdf"><a href="#“INTRODUCTION”-pdf" class="headerlink" title="“INTRODUCTION” (pdf)"></a>“INTRODUCTION” (<a href="zotero://open-pdf/library/items/VJ7XHLCZ?page=3">pdf</a>)</h2><p>对比增量学习，增量学习因为原本的权重很大，所以没法是模型直接改变行为</p><p>提出trojan trigger，即使用触发器来达到植入后门，不会影响其他数据并且使用少数据集进行训练</p><h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2><p>三个步骤：</p><ul><li><p>触发器生成器</p></li><li><p>训练数据生成器</p></li><li><p>模型重训练</p></li></ul><h3 id="Trojan-trigger-generation"><a href="#Trojan-trigger-generation" class="headerlink" title="Trojan trigger generation"></a>Trojan trigger generation</h3><p>通过选定某些层的某些神经元作为最大值激活的目标，来反向梯度传播调整后门标识的值，即在标识和神经元之间建立强联系，然后通过神经元的选择和训练，和最终结果建立强联系</p><ol><li><p>神经元的选择</p></li><li><p>反向梯度传播的详细过程</p></li></ol><h3 id="Training-data-generation"><a href="#Training-data-generation" class="headerlink" title="Training data generation"></a>Training data generation</h3><p>通过反向梯度传播来找到每一个分类结果的最大化样本图片作为模拟训练集</p><p>细节：</p><p>就是一个基本的梯度下降，loss是均方误差</p><p>mask是用来和梯度相乘，来掩盖掉其他部分的梯度的</p><p>DENOISE Function 降噪，思想是使用最小化总方差，值为像素之间的平方误差之和，来使像素之间平滑，作用是可以提升准确率</p><h3 id="Retraining-model"><a href="#Retraining-model" class="headerlink" title="Retraining model"></a>Retraining model</h3><p>训练过程中要注意的</p><ol><li><p>生成的数据集是原始分类图片＋加了后门以后的</p></li><li><p>建立选定的神经元激活和伪装的结果之间的强联系</p></li><li><p>减少伪装的结果以及其他结果的权重，来防止权重膨胀，因为改变以后的模型权重会增大对于伪造目标分类的概率</p></li></ol><p>面临着两个重要选择：</p><ol><li><p>标识的选择(难以做到权重补偿)</p></li><li><p>激活神经元的选择(不能直接选择激发输出节点)</p></li></ol><h3 id="Internal-Neuron-Selection"><a href="#Internal-Neuron-Selection" class="headerlink" title="Internal Neuron Selection"></a>Internal Neuron Selection</h3><p>一个神经元指的是权重矩阵一列的值：</p><p>$xW$</p><p>两个layer的神经元之间的权重指的就是第一层的输出结果在第二层上的映射，所以就是第二层的权重值</p><p>神经元的选择是选择与上一层连接权重最大的神经元，因为这样更好做反向梯度传播来达到目标激活，否则达不到目标激活</p><h2 id="Denfense"><a href="#Denfense" class="headerlink" title="Denfense"></a>Denfense</h2><p>检测每种类型的占比，肉眼可见的伪造额度类别的占比大</p><hr><h1 id="随想"><a href="#随想" class="headerlink" title="随想"></a>随想</h1><p>“ATTACK DEMONSTRATION” (<a href="zotero://select/library/items/MB8A8962">Liu 等, p. 2</a>) (<a href="zotero://open-pdf/library/items/VJ7XHLCZ?page=4">pdf</a>)</p><p>仅仅是添加stamp的话，对于网络来说是加强数据的联系或者权重，来产生预计的效果，并没有很复杂</p><p>注意力机制能否有对应应用？　</p><p>对视觉和听觉都进行了attack，是否有统一的方法？</p><p>自己玩一玩，动态视觉识别验证，特定触发器</p><p>重复语句太多，论文一直这样吗？可能讲故事也是一个刚需</p><p>调整像素使得选定的神经元的值最大，来达到输入带有trigger时能够激活神经元</p><p>为什么不影响正常分类？</p><p>怎么compensate的？</p><p>任意徽标不起作用，因为会产生均匀的小影响</p><p>直接选择激活输出节点也不行，原因是：</p><ol><li><p>只选择目标节点激活不够</p></li><li><p>没训练模型的其他部分</p></li></ol><hr><p>典型的，虽然简单，但是思想和方法是开创性的基石文章<br>代码写的一坨，跑都跑不起，连个requirement都没有，毕竟是2018的老古董了</p>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>fine-tune</title>
+      <link href="/posts/46217.html"/>
+      <url>/posts/46217.html</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>people</title>
+      <link href="/posts/56502.html"/>
+      <url>/posts/56502.html</url>
+      
+        <content type="html"><![CDATA[<p>属实是不太理解<br>别人会将一个主动热情的人的热情与谦逊看得廉价<br>会将高冷与漠然视作向往<br>一方面可能是对<br>当对别人主动和热情时，结局</p><p>优秀也够了，本质的性格也不差，就是面对人一直一幅冷冷和心事重重，不愉快的样子</p><p>总是一幅有心事的样子，有所忧虑，忧虑啥呢？<br>忧虑别人看我有所忧虑所以不敢接近我，导致一直和我不熟<br>傻逼吧</p><p>确实没什么安全感，主动和别人说没营养的话会被看低，心情又没有安定到可以随意的侃侃而谈，不说话又觉得过于冷淡，怕别人觉得我冷漠无情</p><p>可能当自己有自己的家室，有自己引以为傲的工作，朋友和伴侣的时候，才会好一点，但是这应该是过程的收获，而不是目标和结果啊</p><p>不满足于现状可能才是心魔，还是田总的评价，“野心太大”</p>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Transformer</title>
       <link href="/posts/15915.html"/>
       <url>/posts/15915.html</url>
@@ -34,7 +73,7 @@
       <link href="/posts/undefined.html"/>
       <url>/posts/undefined.html</url>
       
-        <content type="html"><![CDATA[<ul><li>返回登录：Ctrl + Alt + Delete 或者 sudo systemctl restart sddm.service</li><li>搜多文件内容：<code>grep -rn &quot;runlog&quot; *</code>   </li></ul>]]></content>
+        <content type="html"><![CDATA[<ul><li>返回登录：Ctrl + Alt + Delete 或者 sudo systemctl restart sddm.service</li><li>搜多文件内容：<code>grep -rn &quot;runlog&quot; *</code>   </li><li>从大到小显示存储占用排名：<code>sudo du -ah / | sort -rh | head -n 20</code></li></ul><h3 id="Server"><a href="#Server" class="headerlink" title="Server"></a>Server</h3><p>一般不允许自己安装包，有几个方式来安装：</p><ol><li>使用模块化系统加载预装软件包：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">module avail  <span class="comment"># 查看可用软件模块</span></span><br><span class="line">module load python/3.8  <span class="comment"># 加载特定版本的 Python</span></span><br></pre></td></tr></table></figure></li><li><p>使用conda:<br>curl安装：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">curl -O https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh</span><br><span class="line"><span class="built_in">chmod</span> +x Miniconda3-latest-Linux-x86_64.sh</span><br><span class="line">./Miniconda3-latest-Linux-x86_64.sh -b -p <span class="variable">$HOME</span>/miniconda</span><br><span class="line"><span class="built_in">export</span> PATH=<span class="string">&quot;<span class="variable">$HOME</span>/miniconda/bin:<span class="variable">$PATH</span>&quot;</span></span><br><span class="line">conda init bash</span><br><span class="line"><span class="built_in">source</span> ~/.bashrc</span><br></pre></td></tr></table></figure><p>可以用conda开玩了，除了没图形界面和GPU，其他的都是一样的<br>matplotlib库也可以使用</p></li><li><p>远程连接</p><ol><li><p>vscode</p></li><li><p>ssh</p></li></ol></li><li><p>测试计算性能</p></li></ol><ul><li>CPU:<ul><li>大矩阵乘法<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">N = <span class="number">8000</span>  </span><br><span class="line">A = np.random.rand(N, N)</span><br><span class="line">B = np.random.rand(N, N)</span><br><span class="line"></span><br><span class="line">start_time = time.time()</span><br><span class="line">C = np.dot(A, B)</span><br><span class="line">end_time = time.time()</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;矩阵乘法完成，耗时: <span class="subst">&#123;end_time - start_time:<span class="number">.2</span>f&#125;</span> 秒&quot;</span>) </span><br></pre></td></tr></table></figure></li><li>蒙特卡罗法计算 π 值<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">monte_carlo_pi</span>(<span class="params">num_samples</span>):</span><br><span class="line">    inside_circle = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(num_samples):</span><br><span class="line">        x = random.uniform(-<span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line">        y = random.uniform(-<span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">if</span> x**<span class="number">2</span> + y**<span class="number">2</span> &lt;= <span class="number">1</span>:</span><br><span class="line">            inside_circle += <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">4</span> * inside_circle / num_samples</span><br><span class="line"></span><br><span class="line"><span class="comment"># 测试计算 π 值的时间</span></span><br><span class="line">num_samples = <span class="number">10</span>**<span class="number">8</span>  <span class="comment"># 样本数量，可以增大以增加计算量</span></span><br><span class="line">start_time = time.time()</span><br><span class="line">pi_estimate = monte_carlo_pi(num_samples)</span><br><span class="line">end_time = time.time()</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;估算的 π 值: <span class="subst">&#123;pi_estimate&#125;</span>&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;计算耗时: <span class="subst">&#123;end_time - start_time:<span class="number">.2</span>f&#125;</span> 秒&quot;</span>)</span><br></pre></td></tr></table></figure></li></ul></li></ul><h3 id="System"><a href="#System" class="headerlink" title="System"></a>System</h3><ul><li>查看cpu数和核数：<code>cat /proc/cpuinfo | grep cores</code></li><li>cpu数：<code>cat /proc/cpuinfo | grep processor | wc -l</code></li><li>RedHat用rpm包管理器：<code>sudo rpm -ivh package.rpm  # 安装一个 RPM 包</code></li><li>查看内核：<code>uname -a</code></li><li></li></ul>]]></content>
       
       
       

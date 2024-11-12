@@ -2,6 +2,42 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://marvoalou.github.io/posts/11148.html</loc>
+    
+    <lastmod>2024-11-12</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://marvoalou.github.io/posts/undefined.html</loc>
+    
+    <lastmod>2024-10-25</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://marvoalou.github.io/posts/46217.html</loc>
+    
+    <lastmod>2024-10-22</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://marvoalou.github.io/posts/56502.html</loc>
+    
+    <lastmod>2024-10-21</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>http://marvoalou.github.io/posts/15915.html</loc>
     
     <lastmod>2024-09-29</lastmod>
@@ -21,15 +57,6 @@
   
   <url>
     <loc>http://marvoalou.github.io/posts/53885.html</loc>
-    
-    <lastmod>2024-09-04</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://marvoalou.github.io/posts/undefined.html</loc>
     
     <lastmod>2024-09-04</lastmod>
     
@@ -202,7 +229,7 @@
 
   <url>
     <loc>http://marvoalou.github.io/</loc>
-    <lastmod>2024-10-06</lastmod>
+    <lastmod>2024-11-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -210,21 +237,21 @@
   
   <url>
     <loc>http://marvoalou.github.io/tags/%E7%9F%A5%E8%AF%86/</loc>
-    <lastmod>2024-10-06</lastmod>
+    <lastmod>2024-11-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>http://marvoalou.github.io/tags/%E5%BE%85%E5%8A%9E/</loc>
-    <lastmod>2024-10-06</lastmod>
+    <lastmod>2024-11-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>http://marvoalou.github.io/tags/%E6%80%9D%E8%80%83/</loc>
-    <lastmod>2024-10-06</lastmod>
+    <lastmod>2024-11-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
