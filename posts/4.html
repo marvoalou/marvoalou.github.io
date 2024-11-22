@@ -1,0 +1,293 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Attack as Defense | Zxman</title><meta name="author" content="zxman"><meta name="copyright" content="zxman"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="原文  很有趣的work 传统的模型编辑是编辑作为推理的结果，所以传统后门的效果是当进行模型编辑的时候，后台给模型加一个后门标识，产生指定的更改结果 本文的模型编辑后台加一个mask noise，来保护指定的区域，在推理阶段不能根据text更改 并且使用的是原模型，只在推理阶段进行添加noise(效果有点像mask啊)就可以达到保护的效果，所以称为运行时 利用的是后门可以指定激活一些神经元的特性">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Attack as Defense">
+<meta property="og:url" content="http://marvoalou.github.io/posts/4.html">
+<meta property="og:site_name" content="Zxman">
+<meta property="og:description" content="原文  很有趣的work 传统的模型编辑是编辑作为推理的结果，所以传统后门的效果是当进行模型编辑的时候，后台给模型加一个后门标识，产生指定的更改结果 本文的模型编辑后台加一个mask noise，来保护指定的区域，在推理阶段不能根据text更改 并且使用的是原模型，只在推理阶段进行添加noise(效果有点像mask啊)就可以达到保护的效果，所以称为运行时 利用的是后门可以指定激活一些神经元的特性">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://marvoalou.github.io/img/index4.jpg">
+<meta property="article:published_time" content="2024-11-20T12:49:49.000Z">
+<meta property="article:modified_time" content="2024-11-22T08:14:21.336Z">
+<meta property="article:author" content="zxman">
+<meta property="article:tag" content="AI security">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://marvoalou.github.io/img/index4.jpg"><link rel="shortcut icon" href="/img/logo1.jpg"><link rel="canonical" href="http://marvoalou.github.io/posts/4.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.12.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.32/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体中文","cht_to_chs":"你已切换为简体中文","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Attack as Defense',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-11-22 16:14:21'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/transparent.css"><link rel="stylesheet" href="/css/custom.css"  media="defer"  onload="this.media='all'"><link rel="stylesheet" href="/css/icat.css"><link rel="stylesheet" href="/css/universe.css"><link rel="stylesheet" href="https://cdn2.codesign.qq.com/icons/XMx86jzlQw0brz3/latest/iconfont.css"><meta name="generator" content="Hexo 7.1.1"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+  window.addEventListener('load',() => { preloader.endLoading() })
+
+  if (false) {
+    document.addEventListener('pjax:send', () => { preloader.initLoading() })
+    document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+  }
+})()</script><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/xuezhixia.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">26</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/index4.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="Zxman"><img class="site-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://tse3-mm.cn.bing.net/th/id/OIP-C.VIiHnqqe9l-MB2_03iub1QHaHa?rs=1&amp;pid=ImgDetMain"/><span class="site-name">Zxman</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div><div id="nav-right"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i></a></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></a></div></div></nav><div id="post-info"><h1 class="post-title">Attack as Defense</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-11-20T12:49:49.000Z" title="发表于 2024-11-20 20:49:49">2024-11-20</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-11-22T08:14:21.336Z" title="更新于 2024-11-22 16:14:21">2024-11-22</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Attack as Defense"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><blockquote>
+<p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2410.14966">原文</a></p>
+</blockquote>
+<p><strong>很有趣的work</strong></p>
+<p>传统的模型编辑是编辑作为推理的结果，所以传统后门的效果是当进行模型编辑的时候，后台给模型加一个后门标识，产生指定的更改结果</p>
+<p>本文的模型编辑后台加一个mask noise，来保护指定的区域，在推理阶段不能根据text更改</p>
+<p>并且使用的是原模型，只在推理阶段进行添加noise(效果有点像mask啊)就可以达到保护的效果，所以称为运行时</p>
+<p>利用的是后门可以指定激活一些神经元的特性，所以可以通过激活指定神经元来达到保护指定的区域的效果，同时保证其他区域的编辑和生成不受影响，确实很像后门</p>
+<p>三个优化目标：</p>
+<ul>
+<li>植入损失，</li>
+<li>不完全触发损失，保持保护区域的激活 </li>
+<li>隐藏损失，保证编辑区域的可用性</li>
+</ul>
+<p>三方：</p>
+<ul>
+<li>模型商</li>
+<li>用户</li>
+<li>图片版权拥有者</li>
+</ul>
+<h3 id="原始的后门模型"><a href="#原始的后门模型" class="headerlink" title="原始的后门模型"></a>原始的后门模型</h3><p>修复损失(inpainting loss)：</p>
+<ul>
+<li>原始图像和生成图像的像素差异$L_{inpaint}$</li>
+<li>生成器的损失$L_{adv}$</li>
+</ul>
+<p>其中的inpaint损失改为具有后门监督的损失，可以训练出具有后门的修复模型</p>
+<h3 id="Run-time-backdoor"><a href="#Run-time-backdoor" class="headerlink" title="Run-time backdoor"></a>Run-time backdoor</h3><p>基于现有模型，不需要训练阶段的后门植入</p>
+<h4 id="原理："><a href="#原理：" class="headerlink" title="原理："></a>原理：</h4><script type="math/tex; mode=display">\mathcal{L}_{implant} = \mathbb{E}_{\phi, \mathcal{P}(x), m}\space[\begin{Vmatrix}\phi_x - \mathcal{IM}(\mathcal{P}(x),\mathcal{T}(m))\end{Vmatrix}^2]</script><script type="math/tex; mode=display">\mathcal{L}_{hide} = \mathbb{E}_{ \mathcal{P}(x), m}\space[\begin{Vmatrix}\mathcal{IM}(x,m_0) - \mathcal{IM}(\mathcal{P}(x),m_0)\end{Vmatrix}^2]</script><p>其中：</p>
+<ul>
+<li>$\mathcal{P}(x)=x\otimes\mathcal{P}$ P是可训练的受保护区域的参数(?模型中的表现是什么:原始图片上加了一个可训练的随机噪声noise)</li>
+<li>$\phi_x$是target</li>
+<li>$\mathcal{IM}(\mathcal{P}(x),\mathcal{T}(m))$是通过参数P产生的加了扰动的保护图片</li>
+<li>$m_0$是除了保护区域之外的区域掩码</li>
+</ul>
+<p>有加一个扩展掩码，因为实验结果表明只有部分区域能够收到保护，所以需要向外扩展一圈</p>
+<p>更改后的公式：</p>
+<script type="math/tex; mode=display">\mathcal{L}_{incomplete} = \mathbb{E}_{\phi, \mathcal{P}(x), m}\space[\begin{Vmatrix}\phi_x - \mathcal{IM}(\mathcal{P}(x),\mathcal{E}(m))\end{Vmatrix}^2]</script><script type="math/tex; mode=display">\mathcal{L}_{hide} = \mathbb{E}_{ \mathcal{P}(x), m}\space[\begin{Vmatrix}\mathcal{IM}(x,\mathcal{E}'(m)) - \mathcal{IM}(\mathcal{P}(x),\mathcal{E}'(m))\end{Vmatrix}^2]</script><p>其中，</p>
+<ul>
+<li>扩展区域掩码为$\mathcal{E}(m)$</li>
+<li>不属于原有的掩码但是属于现有掩码的部分为$\mathcal{E}’(m)$<script type="math/tex; mode=display">\mathcal{E}'(m) = max(0,min(1,\mathcal{E}(m) - \mathcal{T}(m))))</script></li>
+</ul>
+<p>总损失：</p>
+<script type="math/tex; mode=display">\mathcal{L}_{total} = \mathcal{L}_{impaint} + \mathcal{L}_{inconplete} + \mathcal{L}_{hide}</script><p>经实验证明，设置超参：</p>
+<ul>
+<li>hide的权重为2</li>
+<li>noise的迭代训练次数为20</li>
+</ul>
+<p>扩展掩码的问题是</p>
+<h4 id="代码实现："><a href="#代码实现：" class="headerlink" title="代码实现："></a>代码实现：</h4><p>$\phi_x$:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># target是颜色为和原始图像中的平均颜色差别最大的颜色，尺寸为noise的目标图片</span></span><br><span class="line">target = generate_target(ori_fname, (adv_noise.shape[<span class="number">3</span>],adv_noise.shape[<span class="number">2</span>])).to(<span class="string">&quot;cuda&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建一个新的颜色为find_color_with_max_difference的图像</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">generate_target</span>(<span class="params">image, size</span>):</span><br><span class="line">    img = PIL.Image.<span class="built_in">open</span>(image)</span><br><span class="line">    width, height = img.size</span><br><span class="line">    max_diff_color = find_color_with_max_difference(img)</span><br><span class="line"></span><br><span class="line">    new_img = PIL.Image.new(<span class="string">&#x27;RGB&#x27;</span>, (width, height), max_diff_color).resize(size)</span><br><span class="line">    new_img = preprocess(new_img)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> new_img</span><br><span class="line"></span><br><span class="line"><span class="comment"># 和图像平均颜色差异最大的颜色</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">find_color_with_max_difference</span>(<span class="params">img</span>):</span><br><span class="line">    pixels = np.array(img)</span><br><span class="line"></span><br><span class="line">    average_color = np.mean(pixels, axis=(<span class="number">0</span>, <span class="number">1</span>))</span><br><span class="line">    average_color = <span class="built_in">tuple</span>(average_color.astype(<span class="built_in">int</span>))</span><br><span class="line"></span><br><span class="line">    unique_colors = [(<span class="number">0</span>,<span class="number">255</span>,<span class="number">0</span>),(<span class="number">255</span>,<span class="number">0</span>,<span class="number">0</span>),(<span class="number">0</span>,<span class="number">0</span>,<span class="number">255</span>)]</span><br><span class="line">    random.seed(<span class="number">42</span>)</span><br><span class="line">    torch.manual_seed(<span class="number">42</span>)</span><br><span class="line">    torch.cuda.manual_seed(<span class="number">42</span>)</span><br><span class="line">    <span class="comment"># for _ in range(4):</span></span><br><span class="line">    <span class="comment">#     color = tuple(np.random.randint(0, 256, 3))</span></span><br><span class="line">    <span class="comment">#     unique_colors.append(color)</span></span><br><span class="line">    differences = [np.<span class="built_in">sum</span>((np.<span class="built_in">abs</span>(np.array(average_color) - np.array(color))/<span class="number">255</span>)**<span class="number">2</span>) <span class="keyword">for</span> color <span class="keyword">in</span> unique_colors]</span><br><span class="line"></span><br><span class="line">    max_diff_index = np.argmax(differences)</span><br><span class="line">    max_diff_color = unique_colors[max_diff_index]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> max_diff_color</span><br></pre></td></tr></table></figure></p>
+<p>扩展掩码：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">expand_mask</span>(<span class="params">mask_tensor, exp_size</span>):</span><br><span class="line">    <span class="keyword">assert</span> <span class="built_in">len</span>(mask_tensor.shape) == <span class="number">4</span> <span class="keyword">and</span> mask_tensor.shape[<span class="number">0</span>] == <span class="number">1</span> <span class="keyword">and</span> mask_tensor.shape[<span class="number">1</span>] == <span class="number">1</span>, \</span><br><span class="line">        <span class="string">&quot;the shape of mask has to be:  1x1xheightxwidth&quot;</span></span><br><span class="line"></span><br><span class="line">    kernel = torch.ones(<span class="number">1</span>, <span class="number">1</span>, exp_size, exp_size, dtype=torch.float32, device=mask_tensor.device)</span><br><span class="line">    padding_size = (exp_size - <span class="number">1</span>) // <span class="number">2</span> <span class="comment">#大小不变</span></span><br><span class="line"></span><br><span class="line">    expanded_mask = F.conv2d(mask_tensor.<span class="built_in">float</span>(), kernel, padding=padding_size)</span><br><span class="line">    expanded_mask = (expanded_mask &gt; <span class="number">0</span>).<span class="built_in">float</span>()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> expanded_mask</span><br><span class="line"></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;main&#x27;&#x27;&#x27;</span></span><br><span class="line">expd_mask = expand_mask(batch_ben[<span class="string">&#x27;mask&#x27;</span>], <span class="number">17</span>)</span><br><span class="line">batch_adv_expd[<span class="string">&#x27;mask&#x27;</span>] = expd_mask.to(<span class="string">&quot;cuda&quot;</span>)</span><br></pre></td></tr></table></figure></p>
+<p>$\mathcal{E}’(m)$（barch_adv_hide）:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">batch_adv_hide[<span class="string">&#x27;mask&#x27;</span>] = batch_adv_expd[<span class="string">&#x27;mask&#x27;</span>] - batch_ben[<span class="string">&#x27;mask&#x27;</span>]</span><br><span class="line">batch_adv_hide[<span class="string">&#x27;mask&#x27;</span>].data = torch.clip(batch_adv_hide[<span class="string">&#x27;mask&#x27;</span>].data, <span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">batch_adv_hide[<span class="string">&#x27;mask&#x27;</span>] = (batch_adv_hide[<span class="string">&#x27;mask&#x27;</span>] &gt; <span class="number">0</span>) * <span class="number">1</span></span><br><span class="line">batch_ben_hide[<span class="string">&#x27;mask&#x27;</span>].data = batch_adv_hide[<span class="string">&#x27;mask&#x27;</span>].data</span><br></pre></td></tr></table></figure></p>
+<p>超参，hide的权重为2，noise的迭代训练次数为20:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># </span></span><br><span class="line">loss = loss_attack + loss_incp + <span class="number">2</span>*loss_hide</span><br><span class="line"><span class="comment"># the number of training iterations for the protective noise to 20</span></span><br><span class="line"><span class="keyword">for</span> i_iter <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">20</span>)</span><br></pre></td></tr></table></figure></p>
+<p>loss，对应公式区域:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">lama模型修改以后返回的结果,adv图像加了噪声</span></span><br><span class="line"><span class="string">attack_res: adv掩码原始掩码</span></span><br><span class="line"><span class="string">adv_hide_res: adv_hide掩码为E&#x27;(m)</span></span><br><span class="line"><span class="string">adv_expd_res: adv_expd掩码为扩展</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">attack_res = model(batch_adv)[predict_config.out_key][<span class="number">0</span>]</span><br><span class="line">adv_expd_res = model(batch_adv_expd)[predict_config.out_key][<span class="number">0</span>]</span><br><span class="line">adv_hide_res = model(batch_adv_hide)[predict_config.out_key][<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> torch.no_grad():</span><br><span class="line">ben_hide_res = model(batch_ben_hide)[predict_confi  g.out_key][<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># loss</span></span><br><span class="line">loss_attack = mse_masked(attack_res, target, batch_adv[<span class="string">&#x27;mask&#x27;</span>])</span><br><span class="line">loss_incp = mse_masked(adv_expd_res, target, batch_adv_expd[<span class="string">&#x27;mask&#x27;</span>])</span><br><span class="line">loss_hide = mse_masked(adv_hide_res, ben_hide_res, batch_adv_hide[<span class="string">&#x27;mask&#x27;</span>])</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;iter&quot;</span>, i_iter, <span class="string">&quot;, attack loss: &quot;</span>, loss_attack.data, <span class="string">&quot;, incp loss: &quot;</span>, loss_incp.data, <span class="string">&quot;, hide loss: &quot;</span>, loss_hide.data)</span><br><span class="line">loss = loss_attack + loss_incp + <span class="number">2</span>*loss_hide</span><br><span class="line">loss.backward()</span><br><span class="line">optimizer.step()</span><br></pre></td></tr></table></figure></p>
+<p>训练目标是训练参数P使得可以激活后门，也就是说$L_{implant}$就是用来激活特定神经元的损失函数(那么如何在不训练的情况下达成目的？)，但是不影响其他区域的训练</p>
+<p>简而言之就是给了两个优化目标，一个是保护区域，指标是能够加了保护噪音，一个是未保护区域保持原有功能</p>
+<p>问题是既然要进行优化，则需要有监督，不同图片的mask区域是不一样的，如何训练出统一的模型？如果是基于现有模型进行的训练，则过程相当于对模型的微调，在数据集中，m也算是一个输入数据，微调的效果是，给定m，P可以对m区域进行保护，但是m区域之外保原样？</p>
+<p>这个后门噪声到底处于一个什么位置？现有模型的微调之后重新使用？还是一个实时运行和训练的后台？</p>
+<p>同时题外考虑，对于公司来讲，也要权衡新方法的开销成本以及带来的经济效益，做tradeoff来判断是否以更小的成本带来更大的经济价值，这个过程需要远见和魄力，这也是学术和工业界的区别，学术不需要考虑实际成本，工业界没有足够的创造力</p>
+<hr>
+<h2 id="Question"><a href="#Question" class="headerlink" title="Question"></a>Question</h2><ol>
+<li>如何对指定的区域来构造noise，指定限制区域的方法是什么？如何达到推理不可编辑的效果？</li>
+<li>对于不同的模型是否对于图形编辑的模型原理不同，在原有图片上加的后门是否能够通用？</li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://marvoalou.github.io">zxman</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://marvoalou.github.io/posts/4.html">http://marvoalou.github.io/posts/4.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://marvoalou.github.io" target="_blank">Zxman</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/AI-security/">AI security</a></div><div class="post_share"><div class="social-share" data-image="/img/index4.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/11148.html" title="TrojanNN"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/index4.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">TrojanNN</div></div></a></div><div class="next-post pull-right"><a href="/posts/2.html" title="white-box attack"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/index4.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">white-box attack</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/28928.html" title="GAN"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/index4.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-11-22</div><div class="title">GAN</div></div></a></div><div><a href="/posts/54157.html" title="Square-based adversarial patch optimization"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/index4.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-11-22</div><div class="title">Square-based adversarial patch optimization</div></div></a></div><div><a href="/posts/11148.html" title="TrojanNN"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/index4.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-11-12</div><div class="title">TrojanNN</div></div></a></div><div><a href="/posts/2.html" title="white-box attack"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/index4.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-11-22</div><div class="title">white-box attack</div></div></a></div><div><a href="/posts/undefined.html" title="black-box attack"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/index4.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-11-22</div><div class="title">black-box attack</div></div></a></div><div><a href="/posts/5.html" title="pixel-level_regression"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/index4.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-11-22</div><div class="title">pixel-level_regression</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/xuezhixia.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">zxman</div><div class="author-info__description">Hope to enjoy everyday, and find the love i am searchong for</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">26</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/marvoalou"><i class="fab fa-github"></i><span>My Github</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/marvoalou" target="_blank" title="Github"><i class="fab fa-github" style="color: #fffafa;"></i></a><a class="social-icon" href="mailto:zxy799804792@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #fffafa;"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E5%A7%8B%E7%9A%84%E5%90%8E%E9%97%A8%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.</span> <span class="toc-text">原始的后门模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Run-time-backdoor"><span class="toc-number">2.</span> <span class="toc-text">Run-time backdoor</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8E%9F%E7%90%86%EF%BC%9A"><span class="toc-number">2.1.</span> <span class="toc-text">原理：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0%EF%BC%9A"><span class="toc-number">2.2.</span> <span class="toc-text">代码实现：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Question"><span class="toc-number"></span> <span class="toc-text">Question</span></a></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/28928.html" title="GAN"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/index4.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="GAN"/></a><div class="content"><a class="title" href="/posts/28928.html" title="GAN">GAN</a><time datetime="2024-11-22T07:57:11.000Z" title="发表于 2024-11-22 15:57:11">2024-11-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/54157.html" title="Square-based adversarial patch optimization"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/index4.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Square-based adversarial patch optimization"/></a><div class="content"><a class="title" href="/posts/54157.html" title="Square-based adversarial patch optimization">Square-based adversarial patch optimization</a><time datetime="2024-11-22T07:54:18.000Z" title="发表于 2024-11-22 15:54:18">2024-11-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/5.html" title="pixel-level_regression"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/index4.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="pixel-level_regression"/></a><div class="content"><a class="title" href="/posts/5.html" title="pixel-level_regression">pixel-level_regression</a><time datetime="2024-11-22T07:53:21.000Z" title="发表于 2024-11-22 15:53:21">2024-11-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/undefined.html" title="black-box attack"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/index4.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="black-box attack"/></a><div class="content"><a class="title" href="/posts/undefined.html" title="black-box attack">black-box attack</a><time datetime="2024-11-22T07:52:40.000Z" title="发表于 2024-11-22 15:52:40">2024-11-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/2.html" title="white-box attack"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/index4.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="white-box attack"/></a><div class="content"><a class="title" href="/posts/2.html" title="white-box attack">white-box attack</a><time datetime="2024-11-22T07:52:28.000Z" title="发表于 2024-11-22 15:52:28">2024-11-22</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('/img/index4.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2024 By zxman</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.12.0"></script><script src="/js/main.js?v=4.12.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.32/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page@5.2.0/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.8.5/dist/lazyload.iife.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar@0.1.16/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/pangu@4.0.7/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.1
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, '']
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typesetPromise()
+}</script></div><canvas id="universe"></canvas><script defer src="/js/universe.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=4.12.0"></script></div></div></body></html>
